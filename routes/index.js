@@ -7,23 +7,63 @@ exports.index = function(req, res){
   res.render('index', { title: 'Picture Fun' });
 };
 
-exports.helloworld = function(req, res){
-    res.render('helloworld', { title: 'Hello, World!' });
-};
-
 exports.userlist = function(db) {
     return function(req, res) {
         var collection = db.get('usercollection');
         collection.find({},{},function(e,docs) {
             res.render('userlist', {
-                "userlist" : docs
+                "userlist" : docs,
+                "title" : 'Picture Fun'
             });
         });
     };
 };
 
+exports.gallery = function(db) {
+    return function(req, res) {
+        var collection = db.get('galleries');
+        collection.find({'name': req.name},{},function(e,docs) {
+            res.render('gallery', {
+                "gallery" : docs,
+                "title" : 'Picture Fun'
+            });
+        });
+    };
+};
+
+exports.galleries = function(db) {
+    return function(req, res) {
+        var collection = db.get('galleries');
+        collection.find({},{},function(e,docs) {
+            res.render('galleries', {
+                "galleries" : docs,
+                "title" : 'Picture Fun'
+            });
+        });
+    };
+};
+
+exports.addgallery = function(db) {
+    return function(req, res) {
+        var galleryName = req.body.galleryname;
+        
+        var collection = db.get('galleries');
+        
+        collection.insert({
+            "name": galleryName
+        }, function (err, doc) {
+            if (err) {
+                res.send("There was a problem adding.");
+            } else {
+                res.location("galleries");
+                res.redirect("galleries");
+            }
+        });
+    };
+};
+
 exports.newuser = function(req, res) {
-    res.render('newuser', { title: 'Add New User' });
+    res.render('newuser', { title: 'Picture Fun' });
 };
 
 exports.adduser = function(db) {
